@@ -17,7 +17,6 @@ import org.springframework.roo.addon.tostring.RooToString;
 
 @RooJavaBean
 @RooToString
-//@Table(name = "Entity", uniqueConstraints = @javax.persistence.UniqueConstraint({ "namespace", "name" }))
 @RooJpaActiveRecord(finders = { "findEntitysByNameEquals", "findEntitysByNameLike", "findEntitysByNamespaceLike", "findEntitysByNamespaceEquals" })
 @Table(
 		name="Entity",
@@ -30,7 +29,6 @@ public class Entity {
     @NotNull
     private String name = "";
     
-    @NotNull
     private String namespace = "";
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "entity")

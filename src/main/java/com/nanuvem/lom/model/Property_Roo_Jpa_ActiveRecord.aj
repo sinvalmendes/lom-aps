@@ -37,11 +37,11 @@ privileged aspect Property_Roo_Jpa_ActiveRecord {
         return entityManager().createQuery("SELECT o FROM Property o", Property.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
     }
     
-    @Transactional
+    /*@Transactional
     public void Property.persist() {
         if (this.entityManager == null) this.entityManager = entityManager();
         this.entityManager.persist(this);
-    }
+    }*/
     
     @Transactional
     public void Property.remove() {
