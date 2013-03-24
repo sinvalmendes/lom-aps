@@ -36,7 +36,7 @@ privileged aspect Entity_Roo_Jpa_ActiveRecord {
     public static List<Entity> Entity.findEntityEntries(int firstResult, int maxResults) {
         return entityManager().createQuery("SELECT o FROM Entity o", Entity.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
     }
-    
+       
     @Transactional
     public void Entity.remove() {
         if (this.entityManager == null) this.entityManager = entityManager();

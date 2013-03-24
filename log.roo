@@ -56,3 +56,6 @@ exit
 // Spring Roo 1.2.3.RELEASE [rev 7fd62b6] log closed at 2013-03-23 21:56:16
 // Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2013-03-23 22:05:07
 // Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2013-03-23 22:40:36
+// Spring Roo 1.2.3.RELEASE [rev 7fd62b6] log opened at 2013-03-24 00:41:00
+focus --class ~.model.Entity
+finder list

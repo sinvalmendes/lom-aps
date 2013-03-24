@@ -24,7 +24,7 @@ privileged aspect InstanceIntegrationTest_Roo_IntegrationTest {
     declare @type: InstanceIntegrationTest: @Transactional;
     
     @Autowired
-    private InstanceDataOnDemand InstanceIntegrationTest.dod;
+    InstanceDataOnDemand InstanceIntegrationTest.dod;
     
     @Test
     public void InstanceIntegrationTest.testCountInstances() {

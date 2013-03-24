@@ -30,12 +30,12 @@ privileged aspect EntityDataOnDemand_Roo_DataOnDemand {
     }
     
     public void EntityDataOnDemand.setName(Entity obj, int index) {
-        String name = "name_" + index;
+        String name = "_" + index;
         obj.setName(name);
     }
     
     public void EntityDataOnDemand.setNamespace(Entity obj, int index) {
-        String namespace = "namespace_" + index;
+        String namespace = "_" + index;
         obj.setNamespace(namespace);
     }
     

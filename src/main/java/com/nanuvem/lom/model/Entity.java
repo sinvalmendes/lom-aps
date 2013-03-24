@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 import javax.persistence.CascadeType;
+import javax.persistence.EntityNotFoundException;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -27,9 +28,10 @@ import org.springframework.roo.addon.tostring.RooToString;
 public class Entity {
 
     @NotNull
-    private String name;
-
-    private String namespace;
+    private String name = "";
+    
+    @NotNull
+    private String namespace = "";
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "entity")
     private Set<Property> properties = new HashSet<Property>();
@@ -39,19 +41,24 @@ public class Entity {
 
     public void persist() {
         if (this.entityManager == null) this.entityManager = entityManager();
-        
-        if (!this.isValidName()) {
+               
+        if (this.isValidName() == false) {
             throw new ValidationException("Invalid characters in name");
         }
-        if (!this.isValidNamespace()) {
+        
+        if (this.isValidNamespace() == false) {
             throw new ValidationException("Invalid characters in namespace");
         }
-        List<Entity> entitys = Entity.findEntitysByNameLike(this.name.toLowerCase()).getResultList();
         
-        if (entitys.size() > 0){
-        	throw new ValidationException("Entity with same name already exists!");
+        List<Entity> entitiesByName = Entity.findEntitysByNameLike(this.name).getResultList();
+        if (entitiesByName.size() > 0){
+	        for (Entity e: entitiesByName){
+	        	if(e.name.equalsIgnoreCase(this.name) && e.namespace.equalsIgnoreCase(this.namespace)){
+	        		throw new ValidationException("Entity with same name already exists in this namespace!");
+	        	}
+	        }
         }
-        
+          
         try {
             this.entityManager.persist(this);
         } catch (Exception e) {
@@ -76,10 +83,33 @@ public class Entity {
     }
 
     public boolean isValidNamespace() {
-        if (Pattern.matches("[a-zA-Z0-9 _]+", this.namespace)) {
+        if (Pattern.matches("[a-zA-Z0-9 _]+", this.namespace) 
+        		|| this.namespace.equals("")) {
             return true;
         } else {
             return false;
         }
     }
+    
+    /*public static Entity findEntity(Long id) {
+        if (id == null) return null;
+        
+        return entityManager().find(Entity.class, id);
+    }*/
+    
+	public static List<Entity> findEntitiesByEmptyName() {
+		return Entity.findEntitysByNameEquals(" ").getResultList();
+	}
+
+	public static List<Entity> findEntitiesByEmptyNamespace() {
+		return Entity.findEntitysByNamespaceEquals(" ").getResultList();
+	}
+
+	public static List<Entity> findEntitiesByNameWithSpace() {
+		return Entity.findEntitysByNameLike(" ").getResultList();
+	}
+	
+	public static List<Entity> findEntitiesByNamespaceWithSpace() {
+		return Entity.findEntitysByNamespaceLike(" ").getResultList();
+	}
 }
