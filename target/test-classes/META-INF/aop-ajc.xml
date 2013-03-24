@@ -1,0 +1,21 @@
+<aspectj>
+<aspects>
+<aspect name="com.nanuvem.lom.model.PropertyIntegrationTest_Roo_Configurable"/>
+<aspect name="com.nanuvem.lom.model.PropertyDataOnDemand_Roo_DataOnDemand"/>
+<aspect name="com.nanuvem.lom.model.InstanceIntegrationTest_Roo_IntegrationTest"/>
+<aspect name="com.nanuvem.lom.model.PropertyIntegrationTest_Roo_IntegrationTest"/>
+<aspect name="com.nanuvem.lom.model.PropertyValueDataOnDemand_Roo_DataOnDemand"/>
+<aspect name="com.nanuvem.lom.model.InstanceIntegrationTest_Roo_Configurable"/>
+<aspect name="com.nanuvem.lom.model.PropertyValueIntegrationTest_Roo_IntegrationTest"/>
+<aspect name="com.nanuvem.lom.model.InstanceDataOnDemand_Roo_Configurable"/>
+<aspect name="com.nanuvem.lom.model.InstanceDataOnDemand_Roo_DataOnDemand"/>
+<aspect name="com.nanuvem.lom.model.PropertyValueIntegrationTest_Roo_Configurable"/>
+<aspect name="com.nanuvem.lom.model.EntityIntegrationTest_Roo_IntegrationTest"/>
+<aspect name="com.nanuvem.lom.model.EntityDataOnDemand_Roo_DataOnDemand"/>
+<aspect name="com.nanuvem.lom.model.EntityDataOnDemand_Roo_Configurable"/>
+<aspect name="com.nanuvem.lom.model.PropertyDataOnDemand_Roo_Configurable"/>
+<aspect name="com.nanuvem.lom.model.PropertyValueDataOnDemand_Roo_Configurable"/>
+<aspect name="com.nanuvem.lom.model.EntityIntegrationTest_Roo_Configurable"/>
+</aspects>
+</aspectj>
+

@@ -1,0 +1,26 @@
+<aspectj>
+<aspects>
+<aspect name="com.nanuvem.lom.model.Entity_Roo_Jpa_ActiveRecord"/>
+<aspect name="com.nanuvem.lom.model.Entity_Roo_Finder"/>
+<aspect name="com.nanuvem.lom.model.Property_Roo_JavaBean"/>
+<aspect name="com.nanuvem.lom.model.Entity_Roo_JavaBean"/>
+<aspect name="com.nanuvem.lom.model.Entity_Roo_Jpa_Entity"/>
+<aspect name="com.nanuvem.lom.model.Instance_Roo_JavaBean"/>
+<aspect name="com.nanuvem.lom.model.PropertyValue_Roo_ToString"/>
+<aspect name="com.nanuvem.lom.model.Property_Roo_Jpa_Entity"/>
+<aspect name="com.nanuvem.lom.model.PropertyValue_Roo_Jpa_Entity"/>
+<aspect name="com.nanuvem.lom.model.Entity_Roo_ToString"/>
+<aspect name="com.nanuvem.lom.model.Property_Roo_ToString"/>
+<aspect name="com.nanuvem.lom.model.Property_Roo_Jpa_ActiveRecord"/>
+<aspect name="com.nanuvem.lom.model.Instance_Roo_ToString"/>
+<aspect name="com.nanuvem.lom.model.Property_Roo_Configurable"/>
+<aspect name="com.nanuvem.lom.model.Instance_Roo_Jpa_ActiveRecord"/>
+<aspect name="com.nanuvem.lom.model.PropertyValue_Roo_Configurable"/>
+<aspect name="com.nanuvem.lom.model.PropertyValue_Roo_JavaBean"/>
+<aspect name="com.nanuvem.lom.model.Instance_Roo_Jpa_Entity"/>
+<aspect name="com.nanuvem.lom.model.PropertyValue_Roo_Jpa_ActiveRecord"/>
+<aspect name="com.nanuvem.lom.model.Instance_Roo_Configurable"/>
+<aspect name="com.nanuvem.lom.model.Entity_Roo_Configurable"/>
+</aspects>
+</aspectj>
+
