@@ -68,8 +68,6 @@ public class Entity {
         List<Entity> entitiesByName = Entity.findEntitysByNameLike(this.name).getResultList();
         if (entitiesByName.size() > 0){
 	        for (Entity e: entitiesByName){
-	        	System.err.println(e.name + this.name);
-	        	System.err.println(e.namespace + this.namespace);
 	        	if(e.name.equalsIgnoreCase(this.name) && e.namespace.equalsIgnoreCase(this.namespace)){
 	        		throw new ValidationException("Entity with same name already exists in this namespace!");
 	        	}
@@ -86,7 +84,8 @@ public class Entity {
     public static Entity findEntity(Long id) {
         if (id == null) return null;
         Entity found = entityManager().find(Entity.class, id);
-        if (found == null) throw new EntityNotFoundException("Entity not found!");
+        if (found == null) 
+        	throw new EntityNotFoundException("Entity not found!");
         return found;
     } 
     
@@ -130,17 +129,7 @@ public class Entity {
 		return Entity.findEntitysByNamespaceLike(" ").getResultList();
 	}
 	
-	/*Sinval Vieira ->
-	ONDE É O MELHOR LUGAR PARA ESTE MÉTODO?
-	AQUI OU static NA CLASSE 'Property'?
-	*/
-	public List<Property> findPropertiesByFragmentOfName(String fragmentOfName){
-		List<Property> properties = new ArrayList<Property>();
-		for (Property p : Property.findPropertysByEntity(this).getResultList()){
-			if (p.getName().contains(fragmentOfName)){
-				properties.add(p);
-			}
-		}
-		return properties;
+	public List<Property> findPropertiesByName(String fragmentOfName){
+		return Property.findPropertysByEntityAndNameLike(this, fragmentOfName).getResultList();
 	}
 }

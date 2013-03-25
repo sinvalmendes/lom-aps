@@ -34,25 +34,74 @@ public class PropertyIntegrationTest {
 		return property;
 	}
 
-	/*@Test
-	public void testMarkerMethod() {
-	}*/
-
 	@Before
 	public void init() {
 		entity = new Entity();
 		property = new Property();
+		
 	}
-
+	
+	@Test
+    public void testCountPropertys() {
+		entity = this.createEntity("entity", "namespace");
+        Assert.assertNotNull(entity);
+        entity.persist();
+        
+        property = this.createProperty("property", "configuration",
+        		PropertyType._BINARY, entity);
+        property.persist();
+        long count = Property.countPropertys();
+        Assert.assertTrue(count == 1);
+    }
+	
+	@Test
+    public void testFindProperty() {
+		entity = this.createEntity("entity", "namespace");
+        Assert.assertNotNull(entity);
+        entity.persist();
+        
+        property = this.createProperty("property", "configuration",
+        		PropertyType._BINARY, entity);
+        property.persist();
+		
+        Property found = Property.findProperty(property.getId());
+        Assert.assertEquals(entity.getId(), found.getId());
+    }
+	
+	@Test
+    public void testPersist() {
+		entity = this.createEntity("EntityName", "EntityNamespace");
+		entity.persist();
+		property = this.createProperty("PropertyName", "configuration",
+				PropertyType.TEXT, entity);
+		property.persist();
+		property.flush();
+        Assert.assertNotNull("Expected 'Property' identifier to no longer be null", property.getId());
+    }
+	
+	@Test
+    public void testRemove() {
+		entity = this.createEntity("EntityName", "EntityNamespace");
+		entity.persist();
+		property = this.createProperty("PropertyName", "configuration",
+				PropertyType.TEXT, entity);
+		property.persist();
+		long id = property.getId();
+        property.remove();
+        property.flush();
+        Property.findProperty(id);
+	}
+	
 	/* CREATE PROPERTY */
-
+	
+	
+	
 	@Test
 	public void validEntityPropertyTypeAndName() {
 		entity = this.createEntity("EntityName", "EntityNamespace");
 		entity.persist();
 		property = this.createProperty("PropertyName", "configuration",
 				PropertyType.TEXT, entity);
-
 		property.persist();
 		Assert.assertEquals(Property.findProperty(property.getId()), property);
 	}
@@ -74,7 +123,7 @@ public class PropertyIntegrationTest {
 				property_2);
 		Assert.assertEquals(entity_2, property_2.getEntity());
 	}
-
+		
 	@Test
 	public void propertyNameWithSpaces() {
 		entity = this.createEntity("Entity_1", "EntityNamespace");
@@ -142,7 +191,24 @@ public class PropertyIntegrationTest {
 	 */
 
 	/* READ PROPERTIES */
+	
+    @Test
+    public void testFindAllPropertys() {
+    	entity = this.createEntity("Entity_1", "EntityNamespace");
+		entity.persist();
+		property = this.createProperty("Property_1", "configuration",
+				PropertyType.TEXT, entity);
+		property.persist();
 
+		Property property_2 = this.createProperty("Property_2",
+				"configuration", PropertyType.TEXT, entity);
+		property_2.persist();
+        long count = Property.countPropertys();
+        List<Property> result = Property.findAllPropertys();
+        Assert.assertNotNull("Find all method for 'Property' illegally returned null", result);
+        Assert.assertTrue("Find all method for 'Property' failed to return any data", result.size() == count);
+    }
+	
 	@Test
 	public void listAllPropertiesOfAnEntity() {
 		entity = this.createEntity("Entity_1", "EntityNamespace");
@@ -176,7 +242,7 @@ public class PropertyIntegrationTest {
 		property_2.persist();
 
 		List<Property> propertiesByFragment = entity
-				.findPropertiesByFragmentOfName("_2");
+				.findPropertiesByName("_2");
 
 		Assert.assertTrue(propertiesByFragment.contains(property_2));
 		Assert.assertEquals(propertiesByFragment.size(), 1);
@@ -184,8 +250,7 @@ public class PropertyIntegrationTest {
 	}
 
 	/*
-	 * @Test public void listAllPropertiesOfAnEntityByEmptyName(){ //TODO ESSE
-	 * TESTE PARECE INÚTIL, VISTO QUE NÃO SE PODE CRIAR PROPERTIES SEM NOME }
+	 * @Test public void listAllPropertiesOfAnEntityByEmptyName(){ //TODO 
 	 */
 
 	@Test
@@ -201,7 +266,7 @@ public class PropertyIntegrationTest {
 		property_2.persist();
 
 		List<Property> propertiesByFragment = entity
-				.findPropertiesByFragmentOfName("y 1");
+				.findPropertiesByName("y 1");
 
 		Assert.assertTrue(propertiesByFragment.contains(property));
 		Assert.assertEquals(propertiesByFragment.size(), 1);
@@ -239,5 +304,7 @@ public class PropertyIntegrationTest {
 	public void listPropertiesOfAnUnknownEntity() {
 		Property.findPropertysByEntity(entity);
 	}
-
+	
+	/*REMOVE PROPERTIES*/
+	
 }

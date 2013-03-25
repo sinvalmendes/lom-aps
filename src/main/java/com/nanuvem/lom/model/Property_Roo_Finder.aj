@@ -10,12 +10,21 @@ import javax.persistence.TypedQuery;
 
 privileged aspect Property_Roo_Finder {
     
-    /*public static TypedQuery<Property> Property.findPropertysByEntity(Entity entity) {
+    public static TypedQuery<Property> Property.findPropertysByEntityAndNameLike(Entity entity, String name) {
         if (entity == null) throw new IllegalArgumentException("The entity argument is required");
+        if (name == null || name.length() == 0) throw new IllegalArgumentException("The name argument is required");
+        name = name.replace('*', '%');
+        if (name.charAt(0) != '%') {
+            name = "%" + name;
+        }
+        if (name.charAt(name.length() - 1) != '%') {
+            name = name + "%";
+        }
         EntityManager em = Property.entityManager();
-        TypedQuery<Property> q = em.createQuery("SELECT o FROM Property AS o WHERE o.entity = :entity", Property.class);
+        TypedQuery<Property> q = em.createQuery("SELECT o FROM Property AS o WHERE o.entity = :entity AND LOWER(o.name) LIKE LOWER(:name)", Property.class);
         q.setParameter("entity", entity);
+        q.setParameter("name", name);
         return q;
-    }*/
+    }
     
 }

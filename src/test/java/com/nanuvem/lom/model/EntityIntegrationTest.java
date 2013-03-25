@@ -96,20 +96,14 @@ public class EntityIntegrationTest {
 		}
 	}
 
-	@Test
-	// (expected=ValidationException.class)
+	@Test(expected=ValidationException.class)
 	public void caseInsensitiveName() {
 		entity = this.createEntity("NAME", "namespace");
 		entity.persist();
 
 		Entity entity2 = this.createEntity("name", "namespace");
-		try {
-			entity2.persist();
-			Assert.fail();
-		} catch (ValidationException e) {
-			List<Entity> allEntitiesList = Entity.findAllEntitys();
-			Assert.assertFalse(allEntitiesList.contains(entity2));
-		}
+		
+		entity2.persist();
 	}
 
 	@Test
@@ -177,7 +171,6 @@ public class EntityIntegrationTest {
 		 entity.setName("n a m e");
 		 entity.setNamespace("n a m e s p a c e");
 		 
-		 
 		 Entity entity_found = Entity.findEntity(entity.getId());
 		 
 		 Assert.assertEquals("n a m e", entity_found.getName());
@@ -214,11 +207,21 @@ public class EntityIntegrationTest {
 		 entity.persist();
 	 }
 	 
-	 @Test (expected=EntityNotFoundException.class)
+	 @Test(expected=EntityNotFoundException.class)
+	 public void testRemove() {
+		 Entity entity = this.createEntity("entity", "namespace");
+		 entity.persist();
+		 Long id = entity.getId();
+		 entity.remove();
+		 Entity found = Entity.findEntity(id);
+		 Assert.assertNull(found);
+	 }
+	 
+	 @Test(expected=EntityNotFoundException.class)
 	 public void deleteEntityDeletedByIdYet() {
 		 entity = this.createEntity("aaaaa", "bbbbb");
 		 entity.persist();
-		 Entity found = entity.findEntity(entity.getId());
+		 Entity found = Entity.findEntity(entity.getId());
 		 found.remove();
 		 entity.remove();
 	 }
