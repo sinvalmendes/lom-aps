@@ -1,6 +1,5 @@
 package com.nanuvem.lom.model;
 
-//import org.aspectj.lang.annotation.Before;
 import java.util.List;
 
 import javax.persistence.EntityNotFoundException;
@@ -17,23 +16,11 @@ import org.springframework.roo.addon.test.RooIntegrationTest;
 public class EntityIntegrationTest {
 	private Entity entity;
 
-	private Property property;
-
 	private Entity createEntity(String name, String namespace) {
 		Entity entity = new Entity();
 		entity.setName(name);
 		entity.setNamespace(namespace);
 		return entity;
-	}
-
-	private Property createProperty(String name, String configuration,
-			PropertyType type, Entity entity) {
-		Property property = new Property();
-		property.setName(name);
-		property.setConfiguration(configuration);
-		property.setType(type);
-		property.setEntity(entity);
-		return property;
 	}
 
 	@Before
@@ -100,10 +87,8 @@ public class EntityIntegrationTest {
 
 	@Test
 	public void nameOrNamespaceWithInvalidChar() throws Exception {
-		entity.setName("wrongname@#$#@");
-		entity.setNamespace("wrongnamespace@@#$%");
 		try {
-			entity.persist();
+			entity = this.createEntity("wrongname@#$#@", "wrongnamespace@@#$%");
 			Assert.fail();
 		} catch (ValidationException e) {
 			List<Entity> allEntitiesList = Entity.findAllEntitys();
@@ -146,8 +131,108 @@ public class EntityIntegrationTest {
 
 		}
 	}
+	
+	@Test
+	 public void updateWithValidNewNameAndNewPackage() {
+		 entity = this.createEntity("entity", "namespace");           
+		 entity.persist();
+		 entity.setName("abc");
+		 entity.setNamespace("cde");
+		 Entity entityFound = Entity.findEntity(entity.getId());
+		 Assert.assertEquals("abc", entityFound.getName());
+		 Assert.assertEquals("cde", entityFound.getNamespace());
+		 
+	}
+	 
+	 @Test
+	 public void updateRemovingPackage() {
+		 Entity entity_1 = this.createEntity("test", "namespaceTest");           
+		 entity_1.persist();
+		 entity_1.setNamespace("");
+		 Entity entityFound = Entity.findEntity(entity_1.getId());
+		 Assert.assertEquals("", entityFound.getNamespace());
+	 }
+	 
+	 @Test
+	 public void updateRenameTwoEntitiesWithSameNameInDifferentPackage() {
+		 entity = this.createEntity("aaaaa", "bbbbb");           
+		 entity.persist();
+		 
+		 Entity entity2 = this.createEntity("ccccc", "ddddd");           
+		 entity2.persist();
+		 
+		 entity.setName("ccccc");
+		 
+		 Entity entity_found = Entity.findEntity(entity.getId());
+		 Entity entity2_found = Entity.findEntity(entity2.getId());
+		 Assert.assertEquals(entity_found.getName(), entity2_found.getName());
+		 Assert.assertEquals("bbbbb",  entity_found.getNamespace());
+		 Assert.assertEquals("ddddd", entity2_found.getNamespace());
+	 }
+	 
+	 @Test
+	 public void updateNameAndNamespaceWithSpaces() {
+		 entity = this.createEntity("aaaaa", "bbbbb");           
+		 entity.persist();
+		 entity.setName("n a m e");
+		 entity.setNamespace("n a m e s p a c e");
+		 
+		 
+		 Entity entity_found = Entity.findEntity(entity.getId());
+		 
+		 Assert.assertEquals("n a m e", entity_found.getName());
+		 Assert.assertEquals("n a m e s p a c e", entity_found.getNamespace());
+	 }
+	 
+	 @Test (expected=ValidationException.class)
+	 public void updateRemoveName() {
+		 entity = this.createEntity("aaaaa", "bbbbb");
+		 entity.persist();
+		 entity.setName("");
+	 }
+	 
+	 /*@Test (expected=ValidationException.class)
+	 public void updateTwoEntitiesWithSameNameAndSameNamespace() {
+		 entity  = this.createEntity("aaaaa", "");
+		 entity.persist();
+		 Entity entity2 = this.createEntity("aaaaa", "bbbbb");
+		 entity2.persist();
+		 entity2.setNamespace("");
+		 entity.persist();
+	 }*/
+	 
+	 @Test (expected=ValidationException.class)
+	 public void updateRenameCausingNameWithInvalidChar() {
+		 entity = this.createEntity("entity", "namespace");
+		 entity.persist();
+		 entity.setName("@#$%");
+	 }
+	 
+	 @Test (expected=ValidationException.class)
+	 public void updateRenameCausingNamespaceWithInvalidChar() {
+		 entity = this.createEntity("aaaaa", "@#$%^&*");
+		 entity.persist();
+	 }
+	 
+	 @Test (expected=EntityNotFoundException.class)
+	 public void deleteEntityDeletedByIdYet() {
+		 entity = this.createEntity("aaaaa", "bbbbb");
+		 entity.persist();
+		 Entity found = entity.findEntity(entity.getId());
+		 found.remove();
+		 entity.remove();
+	 }
+	 
+	 
+	 @Test (expected=EntityNotFoundException.class)
+	 public void deleteEntityByUnknownId() {
+		 entity = this.createEntity("aaaaa", "bbbbb");
+		 entity.persist();
+		 entity.findEntity((long) -123456789);
+	 }
+	
 
-	/* LIST ENTITIES */
+	/* READ ENTITIES */
 	@Test
 	public void listAllEntities() {
 		Entity entity_1 = new Entity();
@@ -312,7 +397,7 @@ public class EntityIntegrationTest {
 		Assert.assertEquals(0, entities.size());
 	}
 
-	@Test
+	@Test(expected=EntityNotFoundException.class)
 	public void getEntityWithAnUnknowId() {
 		Entity entity_1 = this.createEntity("Bus", "Namespace");
 		entity_1.persist();
@@ -320,106 +405,4 @@ public class EntityIntegrationTest {
 		Assert.assertNull(Entity.findEntity(id));
 	}
 
-	/* CREATE PROPERTY */
-
-	@Test
-	public void validEntityPropertyTypeAndName() {
-		entity = this.createEntity("EntityName", "EntityNamespace");
-		entity.persist();
-		property = this.createProperty("PropertyName",
-				"configuration", PropertyType.TEXT, entity);
-
-		property.persist();
-		Assert.assertEquals(Property.findProperty(property.getId()), property);
-	}
-
-	@Test
-	public void twoPropertiesWithSameNameInDiferentEntities() {
-		entity = this.createEntity("Entity_1", "EntityNamespace");
-		entity.persist();
-		property = this.createProperty("SameName",
-				"configuration", PropertyType.TEXT, entity);
-		property.persist();
-		Entity entity_2 = this.createEntity("Entity_2", "EntityNamespace");
-		entity_2.persist();
-		Property property_2 = this.createProperty("SameName",
-				"configuration", PropertyType.TEXT, entity_2);
-		property_2.persist();
-
-		Assert.assertEquals(Property.findProperty(property_2.getId()),
-				property_2);
-		Assert.assertEquals(entity_2, property_2.getEntity());
-	}
-
-	@Test
-	public void propertyNameWithSpaces() {
-		entity = this.createEntity("Entity_1", "EntityNamespace");
-		entity.persist();
-		property = this.createProperty("Name with spaces",
-				"configuration", PropertyType.TEXT, entity);
-		property.persist();
-		Assert.assertEquals(Property.findProperty(property.getId()), property);
-	}
-
-	@Test
-	public void configureMandatoryProperty() {
-		// TODO
-	}
-
-	@Test
-	public void configurePropertyWithDefaultValue() {
-		// TODO
-	}
-
-	@Test(expected = ValidationException.class)
-	public void propertyWithoutName() {
-		entity = this.createEntity("Entity_1", "EntityNamespace");
-		entity.persist();
-		property = this.createProperty("",
-				"configuration", PropertyType.TEXT, entity);
-		property.persist();
-	}
-	
-	@Test(expected = ValidationException.class)
-	public void twoDifferentTypePropertiesWithSameNameInSameEntity(){
-		entity = this.createEntity("Entity_1", "EntityNamespace");
-		entity.persist();
-		property = this.createProperty("SameName",
-				"configuration", PropertyType.TEXT, entity);		
-		property.persist();
-		Property property_2 = this.createProperty("SameName",
-				"configuration", PropertyType.PASSWORD, entity);
-		property_2.persist();
-	}
-	
-	@Test(expected = ValidationException.class)
-	public void twoSameTypePropertiesWithSameNameInSameEntity(){
-		entity = this.createEntity("Entity_1", "EntityNamespace");
-		entity.persist();
-		property = this.createProperty("SameName",
-				"configuration", PropertyType.TEXT, entity);		
-		property.persist();
-		Property property_2 = this.createProperty("SameName",
-				"configuration", PropertyType.TEXT, entity);
-		property_2.persist();
-	}
-	
-	@Test(expected = ValidationException.class)
-	public void caseInsensitiveNames(){
-		entity = this.createEntity("Entity_1", "EntityNamespace");
-		entity.persist();
-		property = this.createProperty("SameName",
-				"configuration", PropertyType.TEXT, entity);		
-		property.persist();
-		Property property_2 = this.createProperty("samename",
-				"configuration", PropertyType.TEXT, entity);
-		property_2.persist();
-	}
-	
-	@Test(expected = ValidationException.class)
-	public void invalidConfigurationForEveryPropertyType(){
-		//TODO
-	}
-	
-	
 }

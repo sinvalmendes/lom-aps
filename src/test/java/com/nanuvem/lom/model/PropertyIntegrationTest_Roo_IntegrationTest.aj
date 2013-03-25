@@ -24,7 +24,7 @@ privileged aspect PropertyIntegrationTest_Roo_IntegrationTest {
     declare @type: PropertyIntegrationTest: @Transactional;
     
     @Autowired
-    private PropertyDataOnDemand PropertyIntegrationTest.dod;
+    PropertyDataOnDemand PropertyIntegrationTest.dod;
     
     @Test
     public void PropertyIntegrationTest.testCountPropertys() {

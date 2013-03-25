@@ -1,5 +1,6 @@
 package com.nanuvem.lom.model;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -36,21 +37,39 @@ public class Entity {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "entity")
     private Set<Instance> instances = new HashSet<Instance>();
-
+    
+    public void setName(String name) {
+    	if (this.isValidName(name)){
+    		this.name = name;
+    	}else{
+    		throw new ValidationException("Parameter is invalid!");
+    	}
+    }
+    
+    public void setNamespace(String namespace) {
+    	if (this.isValidNamespace(namespace)){
+    		this.namespace = namespace;
+    	}else{
+    		throw new ValidationException("Parameter is invalid!");
+    	}
+    }
+    
     public void persist() {
         if (this.entityManager == null) this.entityManager = entityManager();
                
-        if (this.isValidName() == false) {
+        if (this.isValidName(this.name) == false) {
             throw new ValidationException("Invalid characters in name");
         }
         
-        if (this.isValidNamespace() == false) {
+        if (this.isValidNamespace(this.namespace) == false) {
             throw new ValidationException("Invalid characters in namespace");
         }
-        
+                
         List<Entity> entitiesByName = Entity.findEntitysByNameLike(this.name).getResultList();
         if (entitiesByName.size() > 0){
 	        for (Entity e: entitiesByName){
+	        	System.err.println(e.name + this.name);
+	        	System.err.println(e.namespace + this.namespace);
 	        	if(e.name.equalsIgnoreCase(this.name) && e.namespace.equalsIgnoreCase(this.namespace)){
 	        		throw new ValidationException("Entity with same name already exists in this namespace!");
 	        	}
@@ -63,37 +82,37 @@ public class Entity {
             throw new ValidationException(e.getMessage());
         }
     }
-
-    public boolean validateNameAndNamespace() {
-        if (this.isValidName() && this.isValidNamespace()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public boolean isValidName() {
-        if (Pattern.matches("[a-zA-Z0-9 _]+", this.name)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public boolean isValidNamespace() {
-        if (Pattern.matches("[a-zA-Z0-9 _]+", this.namespace) 
-        		|| this.namespace.equals("")) {
-            return true;
-        } else {
-            return false;
-        }
-    }
     
-    /*public static Entity findEntity(Long id) {
+    public static Entity findEntity(Long id) {
         if (id == null) return null;
-        
-        return entityManager().find(Entity.class, id);
-    }*/
+        Entity found = entityManager().find(Entity.class, id);
+        if (found == null) throw new EntityNotFoundException("Entity not found!");
+        return found;
+    } 
+    
+    public boolean validateNameAndNamespace() {
+        if (this.isValidName(this.name) && this.isValidNamespace(this.namespace)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isValidName(String name) {
+        if (Pattern.matches("[a-zA-Z0-9 _]+", name)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isValidNamespace(String namespace) {
+        if (Pattern.matches("[a-zA-Z0-9 _]+", namespace) || namespace.equals("")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     
 	public static List<Entity> findEntitiesByEmptyName() {
 		return Entity.findEntitysByNameEquals(" ").getResultList();
@@ -109,5 +128,19 @@ public class Entity {
 	
 	public static List<Entity> findEntitiesByNamespaceWithSpace() {
 		return Entity.findEntitysByNamespaceLike(" ").getResultList();
+	}
+	
+	/*Sinval Vieira ->
+	ONDE É O MELHOR LUGAR PARA ESTE MÉTODO?
+	AQUI OU static NA CLASSE 'Property'?
+	*/
+	public List<Property> findPropertiesByFragmentOfName(String fragmentOfName){
+		List<Property> properties = new ArrayList<Property>();
+		for (Property p : Property.findPropertysByEntity(this).getResultList()){
+			if (p.getName().contains(fragmentOfName)){
+				properties.add(p);
+			}
+		}
+		return properties;
 	}
 }

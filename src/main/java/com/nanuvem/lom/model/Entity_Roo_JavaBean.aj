@@ -13,19 +13,11 @@ privileged aspect Entity_Roo_JavaBean {
     public String Entity.getName() {
         return this.name;
     }
-    
-    public void Entity.setName(String name) {
-        this.name = name;
-    }
-    
+        
     public String Entity.getNamespace() {
         return this.namespace;
     }
-    
-    public void Entity.setNamespace(String namespace) {
-        this.namespace = namespace;
-    }
-    
+        
     public Set<Property> Entity.getProperties() {
         return this.properties;
     }
