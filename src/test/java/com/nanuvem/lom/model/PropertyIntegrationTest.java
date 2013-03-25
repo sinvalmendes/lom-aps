@@ -10,12 +10,16 @@ import junit.framework.Assert;
 import org.hibernate.PropertyNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.roo.addon.test.RooIntegrationTest;
 
 @RooIntegrationTest(entity = Property.class)
 public class PropertyIntegrationTest {
 	private Property property;
 	private Entity entity;
+	
+	@Autowired
+    private PropertyDataOnDemand dod;
 
 	private Entity createEntity(String name, String namespace) {
 		Entity entity = new Entity();
@@ -66,6 +70,67 @@ public class PropertyIntegrationTest {
 		
         Property found = Property.findProperty(property.getId());
         Assert.assertEquals(entity.getId(), found.getId());
+    }
+	
+	@Test
+    public void testFlush() {
+		entity = this.createEntity("entity", "namespace");
+        entity.persist();
+        
+        property = this.createProperty("property", "configuration",
+        		PropertyType._BINARY, entity);
+        property.persist();
+        Long id = property.getId();
+        Assert.assertNotNull("Data on demand for 'Property' failed to provide an identifier", id);
+        property = Property.findProperty(id);
+        Assert.assertNotNull("Find method for 'Property' illegally returned null for id '" + id + "'", property);
+        
+        boolean modified =  dod.modifyProperty(property);
+        
+        Integer currentVersion = property.getVersion();
+        property.flush();
+        Assert.assertTrue("Version for 'Property' failed to increment on flush directive", 
+        		(currentVersion != null && property.getVersion() > currentVersion) || !modified);
+    }
+	
+	@Test
+    public void testFindPropertyEntries() {
+		entity = this.createEntity("entity", "namespace");
+        entity.persist();
+        
+        property = this.createProperty("property", "configuration",
+        		PropertyType._BINARY, entity);
+        property.persist();
+        
+        long count = Property.countPropertys();
+        if (count > 20) count = 20;
+        int firstResult = 0;
+        int maxResults = (int) count;
+        List<Property> result = Property.findPropertyEntries(firstResult, maxResults);
+        Assert.assertNotNull("Find entries method for 'Property' illegally returned null", result);
+        Assert.assertEquals("Find entries method for 'Property' returned an incorrect number of entries", count, result.size());
+    }
+	
+	@Test
+    public void testMergeUpdate() {
+		entity = this.createEntity("entity", "namespace");
+        entity.persist();
+        
+        property = this.createProperty("property", "configuration",
+        		PropertyType._BINARY, entity);
+        property.persist();
+        
+        Long id = property.getId();
+        Assert.assertNotNull("Data on demand for 'Property' failed to provide an identifier", id);
+        property = Property.findProperty(id);
+        boolean modified =  dod.modifyProperty(property);
+        Integer currentVersion = property.getVersion();
+        Property merged = property.merge();
+        property.flush();
+        Assert.assertEquals("Identifier of merged object not the same as identifier of original object", 
+        		merged.getId(), id);
+        Assert.assertTrue("Version for 'Property' failed to increment on merge and flush directive", 
+        		(currentVersion != null && property.getVersion() > currentVersion) || !modified);
     }
 	
 	@Test

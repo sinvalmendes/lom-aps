@@ -25,48 +25,5 @@ privileged aspect PropertyIntegrationTest_Roo_IntegrationTest {
     
     @Autowired
     private PropertyDataOnDemand PropertyIntegrationTest.dod;
-        
-    @Test
-    public void PropertyIntegrationTest.testFindPropertyEntries() {
-        Assert.assertNotNull("Data on demand for 'Property' failed to initialize correctly", dod.getRandomProperty());
-        long count = Property.countPropertys();
-        if (count > 20) count = 20;
-        int firstResult = 0;
-        int maxResults = (int) count;
-        List<Property> result = Property.findPropertyEntries(firstResult, maxResults);
-        Assert.assertNotNull("Find entries method for 'Property' illegally returned null", result);
-        Assert.assertEquals("Find entries method for 'Property' returned an incorrect number of entries", count, result.size());
-    }
-    
-    @Test
-    public void PropertyIntegrationTest.testFlush() {
-        Property obj = dod.getRandomProperty();
-        Assert.assertNotNull("Data on demand for 'Property' failed to initialize correctly", obj);
-        Long id = obj.getId();
-        Assert.assertNotNull("Data on demand for 'Property' failed to provide an identifier", id);
-        obj = Property.findProperty(id);
-        Assert.assertNotNull("Find method for 'Property' illegally returned null for id '" + id + "'", obj);
-        boolean modified =  dod.modifyProperty(obj);
-        Integer currentVersion = obj.getVersion();
-        obj.flush();
-        Assert.assertTrue("Version for 'Property' failed to increment on flush directive", (currentVersion != null && obj.getVersion() > currentVersion) || !modified);
-    }
-    
-    @Test
-    public void PropertyIntegrationTest.testMergeUpdate() {
-        Property obj = dod.getRandomProperty();
-        Assert.assertNotNull("Data on demand for 'Property' failed to initialize correctly", obj);
-        Long id = obj.getId();
-        Assert.assertNotNull("Data on demand for 'Property' failed to provide an identifier", id);
-        obj = Property.findProperty(id);
-        boolean modified =  dod.modifyProperty(obj);
-        Integer currentVersion = obj.getVersion();
-        Property merged = obj.merge();
-        obj.flush();
-        Assert.assertEquals("Identifier of merged object not the same as identifier of original object", merged.getId(), id);
-        Assert.assertTrue("Version for 'Property' failed to increment on merge and flush directive", (currentVersion != null && obj.getVersion() > currentVersion) || !modified);
-    }
-    
-    
-    
+                  
 }
