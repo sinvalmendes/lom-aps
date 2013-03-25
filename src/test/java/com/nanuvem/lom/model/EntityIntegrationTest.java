@@ -96,13 +96,13 @@ public class EntityIntegrationTest {
 		}
 	}
 
-	@Test(expected=ValidationException.class)
+	@Test(expected = ValidationException.class)
 	public void caseInsensitiveName() {
 		entity = this.createEntity("NAME", "namespace");
 		entity.persist();
 
 		Entity entity2 = this.createEntity("name", "namespace");
-		
+
 		entity2.persist();
 	}
 
@@ -125,115 +125,101 @@ public class EntityIntegrationTest {
 
 		}
 	}
-	
+
 	@Test
-	 public void updateWithValidNewNameAndNewPackage() {
-		 entity = this.createEntity("entity", "namespace");           
-		 entity.persist();
-		 entity.setName("abc");
-		 entity.setNamespace("cde");
-		 Entity entityFound = Entity.findEntity(entity.getId());
-		 Assert.assertEquals("abc", entityFound.getName());
-		 Assert.assertEquals("cde", entityFound.getNamespace());
-		 
+	public void updateWithValidNewNameAndNewPackage() {
+		entity = this.createEntity("entity", "namespace");
+		entity.persist();
+		entity.setName("abc");
+		entity.setNamespace("cde");
+		Entity entityFound = Entity.findEntity(entity.getId());
+		Assert.assertEquals("abc", entityFound.getName());
+		Assert.assertEquals("cde", entityFound.getNamespace());
+
 	}
-	 
-	 @Test
-	 public void updateRemovingPackage() {
-		 Entity entity_1 = this.createEntity("test", "namespaceTest");           
-		 entity_1.persist();
-		 entity_1.setNamespace("");
-		 Entity entityFound = Entity.findEntity(entity_1.getId());
-		 Assert.assertEquals("", entityFound.getNamespace());
-	 }
-	 
-	 @Test
-	 public void updateRenameTwoEntitiesWithSameNameInDifferentPackage() {
-		 entity = this.createEntity("aaaaa", "bbbbb");           
-		 entity.persist();
-		 
-		 Entity entity2 = this.createEntity("ccccc", "ddddd");           
-		 entity2.persist();
-		 
-		 entity.setName("ccccc");
-		 
-		 Entity entity_found = Entity.findEntity(entity.getId());
-		 Entity entity2_found = Entity.findEntity(entity2.getId());
-		 Assert.assertEquals(entity_found.getName(), entity2_found.getName());
-		 Assert.assertEquals("bbbbb",  entity_found.getNamespace());
-		 Assert.assertEquals("ddddd", entity2_found.getNamespace());
-	 }
-	 
-	 @Test
-	 public void updateNameAndNamespaceWithSpaces() {
-		 entity = this.createEntity("aaaaa", "bbbbb");           
-		 entity.persist();
-		 entity.setName("n a m e");
-		 entity.setNamespace("n a m e s p a c e");
-		 
-		 Entity entity_found = Entity.findEntity(entity.getId());
-		 
-		 Assert.assertEquals("n a m e", entity_found.getName());
-		 Assert.assertEquals("n a m e s p a c e", entity_found.getNamespace());
-	 }
-	 
-	 @Test (expected=ValidationException.class)
-	 public void updateRemoveName() {
-		 entity = this.createEntity("aaaaa", "bbbbb");
-		 entity.persist();
-		 entity.setName("");
-	 }
-	 
-	 /*@Test (expected=ValidationException.class)
-	 public void updateTwoEntitiesWithSameNameAndSameNamespace() {
-		 entity  = this.createEntity("aaaaa", "");
-		 entity.persist();
-		 Entity entity2 = this.createEntity("aaaaa", "bbbbb");
-		 entity2.persist();
-		 entity2.setNamespace("");
-		 entity.persist();
-	 }*/
-	 
-	 @Test (expected=ValidationException.class)
-	 public void updateRenameCausingNameWithInvalidChar() {
-		 entity = this.createEntity("entity", "namespace");
-		 entity.persist();
-		 entity.setName("@#$%");
-	 }
-	 
-	 @Test (expected=ValidationException.class)
-	 public void updateRenameCausingNamespaceWithInvalidChar() {
-		 entity = this.createEntity("aaaaa", "@#$%^&*");
-		 entity.persist();
-	 }
-	 
-	 @Test(expected=EntityNotFoundException.class)
-	 public void testRemove() {
-		 Entity entity = this.createEntity("entity", "namespace");
-		 entity.persist();
-		 Long id = entity.getId();
-		 entity.remove();
-		 Entity found = Entity.findEntity(id);
-		 Assert.assertNull(found);
-	 }
-	 
-	 @Test(expected=EntityNotFoundException.class)
-	 public void deleteEntityDeletedByIdYet() {
-		 entity = this.createEntity("aaaaa", "bbbbb");
-		 entity.persist();
-		 Entity found = Entity.findEntity(entity.getId());
-		 found.remove();
-		 entity.remove();
-	 }
-	 
-	 
-	 @Test (expected=EntityNotFoundException.class)
-	 public void deleteEntityByUnknownId() {
-		 entity = this.createEntity("aaaaa", "bbbbb");
-		 entity.persist();
-		 entity.findEntity((long) -123456789);
-	 }
+
+	@Test
+	public void updateRemovingPackage() {
+		Entity entity_1 = this.createEntity("test", "namespaceTest");
+		entity_1.persist();
+		entity_1.setNamespace("");
+		Entity entityFound = Entity.findEntity(entity_1.getId());
+		Assert.assertEquals("", entityFound.getNamespace());
+	}
+
+	@Test
+	public void updateRenameTwoEntitiesWithSameNameInDifferentPackage() {
+		entity = this.createEntity("aaaaa", "bbbbb");
+		entity.persist();
+
+		Entity entity2 = this.createEntity("ccccc", "ddddd");
+		entity2.persist();
+
+		entity.setName("ccccc");
+
+		Entity entity_found = Entity.findEntity(entity.getId());
+		Entity entity2_found = Entity.findEntity(entity2.getId());
+		Assert.assertEquals(entity_found.getName(), entity2_found.getName());
+		Assert.assertEquals("bbbbb", entity_found.getNamespace());
+		Assert.assertEquals("ddddd", entity2_found.getNamespace());
+	}
+
+	@Test
+	public void updateNameAndNamespaceWithSpaces() {
+		entity = this.createEntity("aaaaa", "bbbbb");
+		entity.persist();
+		entity.setName("n a m e");
+		entity.setNamespace("n a m e s p a c e");
+
+		Entity entity_found = Entity.findEntity(entity.getId());
+
+		Assert.assertEquals("n a m e", entity_found.getName());
+		Assert.assertEquals("n a m e s p a c e", entity_found.getNamespace());
+	}
+
+	@Test(expected = ValidationException.class)
+	public void updateRemoveName() {
+		entity = this.createEntity("aaaaa", "bbbbb");
+		entity.persist();
+		entity.setName("");
+	}
 	
+	@Test(expected = ValidationException.class)
+	public void updateRenameCausingNameWithInvalidChar() {
+		entity = this.createEntity("entity", "namespace");
+		entity.persist();
+		entity.setName("@#$%");
+	}
+
+	@Test(expected = ValidationException.class)
+	public void updateRenameCausingNamespaceWithInvalidChar() {
+		entity = this.createEntity("aaaaa", "@#$%^&*");
+		entity.persist();
+	}
+
+	@Test(expected = EntityNotFoundException.class)
+	public void testRemove() {
+		Entity entity = this.createEntity("entity", "namespace");
+		entity.persist();
+		Long id = entity.getId();
+		entity.remove();
+		Entity found = Entity.findEntity(id);
+		Assert.assertNull(found);
+	}
+
+	@Test(expected = EntityNotFoundException.class)
+	public void deleteEntityDeletedByIdYet() {
+		entity = this.createEntity("aaaaa", "bbbbb");
+		entity.persist();
+		Entity found = Entity.findEntity(entity.getId());
+		found.remove();
+		entity.remove();
+	}
+
+	@Test(expected = EntityNotFoundException.class)
+	public void deleteEntityByUnknownId() {
+		Entity.findEntity((long) -123456789);
+	}
 
 	/* READ ENTITIES */
 	@Test
@@ -400,7 +386,7 @@ public class EntityIntegrationTest {
 		Assert.assertEquals(0, entities.size());
 	}
 
-	@Test(expected=EntityNotFoundException.class)
+	@Test(expected = EntityNotFoundException.class)
 	public void getEntityWithAnUnknowId() {
 		Entity entity_1 = this.createEntity("Bus", "Namespace");
 		entity_1.persist();

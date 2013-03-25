@@ -130,6 +130,9 @@ public class Entity {
 	}
 	
 	public List<Property> findPropertiesByName(String fragmentOfName){
+		if (fragmentOfName.length() == 0){
+			return Property.findPropertysByEntity(this).getResultList();
+		}
 		return Property.findPropertysByEntityAndNameLike(this, fragmentOfName).getResultList();
 	}
 }
