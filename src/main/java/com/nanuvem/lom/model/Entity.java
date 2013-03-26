@@ -40,6 +40,7 @@ public class Entity {
     
     public void setName(String name) {
     	if (this.isValidName(name)){
+    		this.isValidNameInThisNamespace(name, this.namespace);
     		this.name = name;
     	}else{
     		throw new ValidationException("Parameter is invalid!");
@@ -48,6 +49,8 @@ public class Entity {
     
     public void setNamespace(String namespace) {
     	if (this.isValidNamespace(namespace)){
+    		this.isValidNameInThisNamespace(this.name, namespace);
+
     		this.namespace = namespace;
     	}else{
     		throw new ValidationException("Parameter is invalid!");
@@ -64,21 +67,30 @@ public class Entity {
         if (this.isValidNamespace(this.namespace) == false) {
             throw new ValidationException("Invalid characters in namespace");
         }
-                
-        List<Entity> entitiesByName = Entity.findEntitysByNameLike(this.name).getResultList();
-        if (entitiesByName.size() > 0){
-	        for (Entity e: entitiesByName){
-	        	if(e.name.equalsIgnoreCase(this.name) && e.namespace.equalsIgnoreCase(this.namespace)){
-	        		throw new ValidationException("Entity with same name already exists in this namespace!");
-	        	}
-	        }
-        }
-          
+                 
+        this.isValidNameInThisNamespace(this.name, this.namespace);
+        
         try {
             this.entityManager.persist(this);
         } catch (Exception e) {
             throw new ValidationException(e.getMessage());
         }
+    }
+    
+    private void isValidNameInThisNamespace(String name, String namespace){
+    	List<Entity> entitiesByName = Entity.findEntitysByNameLike(name).getResultList();
+    	System.err.println("here");
+    	if (entitiesByName.size() > 0){
+	        for (Entity e: entitiesByName){
+	        	System.err.println("here");
+	        	if(e.name.equalsIgnoreCase(name) && 
+	        			e.namespace.equalsIgnoreCase(namespace)
+	        			&& e.getId() != this.getId()){
+	        		throw new ValidationException("Entity with same name already exists in this namespace!");
+	        	}
+	        }
+        }
+        
     }
     
     public static Entity findEntity(Long id) {

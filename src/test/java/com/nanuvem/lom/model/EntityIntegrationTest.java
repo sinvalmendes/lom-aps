@@ -102,7 +102,6 @@ public class EntityIntegrationTest {
 		entity.persist();
 
 		Entity entity2 = this.createEntity("name", "namespace");
-
 		entity2.persist();
 	}
 
@@ -163,6 +162,50 @@ public class EntityIntegrationTest {
 		Assert.assertEquals("bbbbb", entity_found.getNamespace());
 		Assert.assertEquals("ddddd", entity2_found.getNamespace());
 	}
+	
+	@Test(expected = ValidationException.class)
+	public void updateRenameForcingCaseInsensitiveName() {
+		entity = this.createEntity("aaaaa", "bbbbb");
+		entity.persist();
+
+		Entity entity2 = this.createEntity("uuuuu", "bbbbb");
+		entity2.persist();
+		
+		entity2.setName("AaAaA");
+	}
+	
+	@Test(expected = ValidationException.class)
+	public void updateRenameForcingCaseInsensitivePackage() {
+		entity = this.createEntity("aaaaa", "bbbbb");
+		entity.persist();
+
+		Entity entity2 = this.createEntity("aaaaa", "ccccc");
+		entity2.persist();
+		
+		entity2.setNamespace("bbbbb");
+	}
+	
+	@Test(expected = ValidationException.class)
+	public void updateRenamingCausingTwoEntitiesWithSameNameInDefaultPackage() {
+		entity = this.createEntity("aaaaa", "");
+		entity.persist();
+		
+		Entity entity2 = this.createEntity("ccccc", "");
+		entity2.persist();
+		
+		entity2.setName("aaaaa");
+	}
+
+	@Test(expected = ValidationException.class)
+	public void updateRenamingCausingTwoEntitiesWithSameNameInNonDefaultPackage() {
+		entity = this.createEntity("aaaaa", "bbbbb");
+		entity.persist();
+		
+		Entity entity2 = this.createEntity("ccccc", "bbbbb");
+		entity2.persist();
+		
+		entity2.setName("aaaaa");
+	}
 
 	@Test
 	public void updateNameAndNamespaceWithSpaces() {
@@ -183,7 +226,7 @@ public class EntityIntegrationTest {
 		entity.persist();
 		entity.setName("");
 	}
-	
+
 	@Test(expected = ValidationException.class)
 	public void updateRenameCausingNameWithInvalidChar() {
 		entity = this.createEntity("entity", "namespace");
