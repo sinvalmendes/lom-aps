@@ -105,8 +105,7 @@ public class EntityIntegrationTest {
 		entity2.persist();
 	}
 
-	@Test
-	// (expected=ValidationException.class)
+	@Test(expected = ValidationException.class)
 	public void caseInsensitiveNamespace() {
 		Entity entity_1 = new Entity();
 		entity_1.setName("name");
@@ -116,13 +115,6 @@ public class EntityIntegrationTest {
 		Entity entity_2 = new Entity();
 		entity_2.setName("name");
 		entity_2.setNamespace("namespace");
-		try {
-			entity_2.persist();
-		} catch (ValidationException e) {
-			Assert.assertEquals(e.getMessage(),
-					"Entity with same name already exists in this namespace!");
-
-		}
 	}
 
 	@Test
@@ -162,7 +154,7 @@ public class EntityIntegrationTest {
 		Assert.assertEquals("bbbbb", entity_found.getNamespace());
 		Assert.assertEquals("ddddd", entity2_found.getNamespace());
 	}
-	
+
 	@Test(expected = ValidationException.class)
 	public void updateRenameForcingCaseInsensitiveName() {
 		entity = this.createEntity("aaaaa", "bbbbb");
@@ -170,10 +162,10 @@ public class EntityIntegrationTest {
 
 		Entity entity2 = this.createEntity("uuuuu", "bbbbb");
 		entity2.persist();
-		
+
 		entity2.setName("AaAaA");
 	}
-	
+
 	@Test(expected = ValidationException.class)
 	public void updateRenameForcingCaseInsensitivePackage() {
 		entity = this.createEntity("aaaaa", "bbbbb");
@@ -181,18 +173,18 @@ public class EntityIntegrationTest {
 
 		Entity entity2 = this.createEntity("aaaaa", "ccccc");
 		entity2.persist();
-		
+
 		entity2.setNamespace("bbbbb");
 	}
-	
+
 	@Test(expected = ValidationException.class)
 	public void updateRenamingCausingTwoEntitiesWithSameNameInDefaultPackage() {
 		entity = this.createEntity("aaaaa", "");
 		entity.persist();
-		
+
 		Entity entity2 = this.createEntity("ccccc", "");
 		entity2.persist();
-		
+
 		entity2.setName("aaaaa");
 	}
 
@@ -200,10 +192,10 @@ public class EntityIntegrationTest {
 	public void updateRenamingCausingTwoEntitiesWithSameNameInNonDefaultPackage() {
 		entity = this.createEntity("aaaaa", "bbbbb");
 		entity.persist();
-		
+
 		Entity entity2 = this.createEntity("ccccc", "bbbbb");
 		entity2.persist();
-		
+
 		entity2.setName("aaaaa");
 	}
 

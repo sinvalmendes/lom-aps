@@ -350,18 +350,17 @@ public class PropertyIntegrationTest {
 		property = this.createProperty("Property 1", "configuration",
 				PropertyType.TEXT, entity);
 		property.persist();
-		
+
 		Property property_2 = this.createProperty("Property_2",
 				"configuration", PropertyType.TEXT, entity);
 		property_2.persist();
 
-		List<Property> propertiesByFragment = entity
-				.findPropertiesByName("");
-		
+		List<Property> propertiesByFragment = entity.findPropertiesByName("");
+
 		Assert.assertTrue(propertiesByFragment.contains(property));
 		Assert.assertTrue(propertiesByFragment.contains(property_2));
 		Assert.assertEquals(propertiesByFragment.size(), 2);
-		
+
 	}
 
 	@Test
