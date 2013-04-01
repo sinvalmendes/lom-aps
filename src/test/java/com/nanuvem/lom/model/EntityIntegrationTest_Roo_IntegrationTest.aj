@@ -106,17 +106,4 @@ privileged aspect EntityIntegrationTest_Roo_IntegrationTest {
         Assert.assertNotNull("Expected 'Entity' identifier to no longer be null", obj.getId());
     }
     
-    /*@Test
-    public void EntityIntegrationTest.testRemove() {
-        Entity obj = dod.getRandomEntity();
-        Assert.assertNotNull("Data on demand for 'Entity' failed to initialize correctly", obj);
-        Long id = obj.getId();
-        Assert.assertNotNull("Data on demand for 'Entity' failed to provide an identifier", id);
-        obj = Entity.findEntity(id);
-        obj.remove();
-        obj.flush();
-        Assert.assertNull("Failed to remove 'Entity' with identifier '" + id + "'", Entity.findEntity(id));
-        
-    }*/
-    
 }

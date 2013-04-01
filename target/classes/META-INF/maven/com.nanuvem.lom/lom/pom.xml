@@ -50,6 +50,12 @@
     </pluginRepositories>
     <dependencies>
         <!-- General dependencies for standard applications -->
+
+        <dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-jaxrs</artifactId>
+			<version>1.9.12</version>
+		</dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

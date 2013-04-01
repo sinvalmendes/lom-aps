@@ -81,3 +81,6 @@ finder add --finderName findPropertysByEntityAndNameLike
 finder list
 finder list --depth 2 --filter "entity, name"
 // Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2013-03-25 11:09:59
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2013-03-25 21:40:33
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2013-03-25 21:49:21
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2013-04-01 11:08:25

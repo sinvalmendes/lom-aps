@@ -47,12 +47,12 @@ public class PropertyIntegrationTest {
 
 	@Test
 	public void testCountPropertys() {
-		entity = this.createEntity("entity", "namespace");
+		entity = createEntity("entity", "namespace");
 		Assert.assertNotNull(entity);
 		entity.persist();
 
-		property = this.createProperty("property", "configuration",
-				PropertyType._BINARY, entity);
+		property = createProperty("property", null, PropertyType._BINARY,
+				entity);
 		property.persist();
 		long count = Property.countPropertys();
 		Assert.assertTrue(count == 1);
@@ -60,12 +60,12 @@ public class PropertyIntegrationTest {
 
 	@Test
 	public void testFindProperty() {
-		entity = this.createEntity("entity", "namespace");
+		entity = createEntity("entity", "namespace");
 		Assert.assertNotNull(entity);
 		entity.persist();
 
-		property = this.createProperty("property", "configuration",
-				PropertyType._BINARY, entity);
+		property = createProperty("property", null, PropertyType._BINARY,
+				entity);
 		property.persist();
 
 		Property found = Property.findProperty(property.getId());
@@ -74,11 +74,11 @@ public class PropertyIntegrationTest {
 
 	@Test
 	public void testFlush() {
-		entity = this.createEntity("entity", "namespace");
+		entity = createEntity("entity", "namespace");
 		entity.persist();
 
-		property = this.createProperty("property", "configuration",
-				PropertyType._BINARY, entity);
+		property = createProperty("property", null, PropertyType._BINARY,
+				entity);
 		property.persist();
 		Long id = property.getId();
 		Assert.assertNotNull(
@@ -101,11 +101,11 @@ public class PropertyIntegrationTest {
 
 	@Test
 	public void testFindPropertyEntries() {
-		entity = this.createEntity("entity", "namespace");
+		entity = createEntity("entity", "namespace");
 		entity.persist();
 
-		property = this.createProperty("property", "configuration",
-				PropertyType._BINARY, entity);
+		property = createProperty("property", null, PropertyType._BINARY,
+				entity);
 		property.persist();
 
 		long count = Property.countPropertys();
@@ -125,11 +125,11 @@ public class PropertyIntegrationTest {
 
 	@Test
 	public void testMergeUpdate() {
-		entity = this.createEntity("entity", "namespace");
+		entity = createEntity("entity", "namespace");
 		entity.persist();
 
-		property = this.createProperty("property", "configuration",
-				PropertyType._BINARY, entity);
+		property = createProperty("property", null, PropertyType._BINARY,
+				entity);
 		property.persist();
 
 		Long id = property.getId();
@@ -152,10 +152,10 @@ public class PropertyIntegrationTest {
 
 	@Test
 	public void testPersist() {
-		entity = this.createEntity("EntityName", "EntityNamespace");
+		entity = createEntity("EntityName", "EntityNamespace");
 		entity.persist();
-		property = this.createProperty("PropertyName", "configuration",
-				PropertyType.TEXT, entity);
+		property = createProperty("PropertyName", null, PropertyType.TEXT,
+				entity);
 		property.persist();
 		property.flush();
 		Assert.assertNotNull(
@@ -165,10 +165,10 @@ public class PropertyIntegrationTest {
 
 	@Test
 	public void testRemove() {
-		entity = this.createEntity("EntityName", "EntityNamespace");
+		entity = createEntity("EntityName", "EntityNamespace");
 		entity.persist();
-		property = this.createProperty("PropertyName", "configuration",
-				PropertyType.TEXT, entity);
+		property = createProperty("PropertyName", null, PropertyType.TEXT,
+				entity);
 		property.persist();
 		long id = property.getId();
 		property.remove();
@@ -180,24 +180,23 @@ public class PropertyIntegrationTest {
 
 	@Test
 	public void validEntityPropertyTypeAndName() {
-		entity = this.createEntity("EntityName", "EntityNamespace");
+		entity = createEntity("EntityName", "EntityNamespace");
 		entity.persist();
-		property = this.createProperty("PropertyName", "configuration",
-				PropertyType.TEXT, entity);
+		property = createProperty("PropertyName", null, PropertyType.TEXT,
+				entity);
 		property.persist();
 		Assert.assertEquals(Property.findProperty(property.getId()), property);
 	}
 
 	@Test
 	public void twoPropertiesWithSameNameInDiferentEntities() {
-		entity = this.createEntity("Entity_1", "EntityNamespace");
+		entity = createEntity("Entity_1", "EntityNamespace");
 		entity.persist();
-		property = this.createProperty("SameName", "configuration",
-				PropertyType.TEXT, entity);
+		property = createProperty("SameName", null, PropertyType.TEXT, entity);
 		property.persist();
-		Entity entity_2 = this.createEntity("Entity_2", "EntityNamespace");
+		Entity entity_2 = createEntity("Entity_2", "EntityNamespace");
 		entity_2.persist();
-		Property property_2 = this.createProperty("SameName", "configuration",
+		Property property_2 = createProperty("SameName", null,
 				PropertyType.TEXT, entity_2);
 		property_2.persist();
 
@@ -208,69 +207,81 @@ public class PropertyIntegrationTest {
 
 	@Test
 	public void propertyNameWithSpaces() {
-		entity = this.createEntity("Entity_1", "EntityNamespace");
+		entity = createEntity("Entity_1", "EntityNamespace");
 		entity.persist();
-		property = this.createProperty("Name with spaces", "configuration",
-				PropertyType.TEXT, entity);
+		property = createProperty("Name with spaces", null, PropertyType.TEXT,
+				entity);
 		property.persist();
 		Assert.assertEquals(Property.findProperty(property.getId()), property);
 	}
 
-	/*
-	 * @Test public void configureMandatoryProperty() { // TODO }
-	 * 
-	 * @Test public void configurePropertyWithDefaultValue() { // TODO }
-	 */
+	@Test
+	public void configureMandatoryProperty() {
+		entity = createEntity("Entity_1", "EntityNamespace");
+		entity.persist();
+		property = createProperty("Name with spaces", "{\"mandatory\":true}", PropertyType.TEXT,
+				entity);
+		
+		property.persist();
+		
+	}
+
+	
+	 @Test 
+	 public void configurePropertyWithDefaultValue() { 
+		 entity = createEntity("Entity_1", "EntityNamespace");
+			entity.persist();
+			property = createProperty("Name with spaces", "{\"default\":\"abc\"}", PropertyType.TEXT,
+					entity);
+			
+			property.persist();
+	 }
+	 
 
 	@Test(expected = ValidationException.class)
 	public void propertyWithoutName() {
-		entity = this.createEntity("Entity_1", "EntityNamespace");
+		entity = createEntity("Entity_1", "EntityNamespace");
 		entity.persist();
-		property = this.createProperty("", "configuration", PropertyType.TEXT,
-				entity);
+		property = createProperty("", null, PropertyType.TEXT, entity);
 		property.persist();
 	}
 
 	@Test(expected = ValidationException.class)
 	public void propertyWithoutEntity() {
 		Entity nullEntity = null;
-		property = this.createProperty("", "configuration", PropertyType.TEXT,
-				nullEntity);
+		property = createProperty("", null, PropertyType.TEXT, nullEntity);
 		property.persist();
 	}
 
 	@Test(expected = ValidationException.class)
 	public void twoDifferentTypePropertiesWithSameNameInSameEntity() {
-		entity = this.createEntity("Entity_1", "EntityNamespace");
+		entity = createEntity("Entity_1", "EntityNamespace");
 		entity.persist();
-		property = this.createProperty("SameName", "configuration",
-				PropertyType.TEXT, entity);
+		property = createProperty("SameName", null, PropertyType.TEXT, entity);
 		property.persist();
-		Property property_2 = this.createProperty("SameName", "configuration",
+		Property property_2 = createProperty("SameName", null,
 				PropertyType.PASSWORD, entity);
 		property_2.persist();
 	}
 
 	@Test(expected = ValidationException.class)
 	public void twoSameTypePropertiesWithSameNameInSameEntity() {
-		entity = this.createEntity("Entity_1", "EntityNamespace");
+		entity = createEntity("Entity_1", "EntityNamespace");
 		entity.persist();
-		property = this.createProperty("SameName", "configuration",
-				PropertyType.TEXT, entity);
+		property = createProperty("SameName", null, PropertyType.TEXT, entity);
 		property.persist();
-		Property property_2 = this.createProperty("SameName", "configuration",
+		Property property_2 = createProperty("SameName", null,
 				PropertyType.TEXT, entity);
 		property_2.persist();
 	}
 
 	@Test(expected = ValidationException.class)
 	public void caseInsensitiveNames() {
-		entity = this.createEntity("Entity_1", "EntityNamespace");
+		entity = createEntity("Entity_1", "EntityNamespace");
 		entity.persist();
-		property = this.createProperty("SameName", "configuration",
-				PropertyType.TEXT, entity);
+		property = createProperty("SameName", null, PropertyType.TEXT, entity);
 		property.persist();
-		Property property_2 = this.createProperty("samename", "configuration",
+		Property property_2 = createProperty("samename", null,
 				PropertyType.TEXT, entity);
 		property_2.persist();
 	}
@@ -284,14 +295,13 @@ public class PropertyIntegrationTest {
 
 	@Test
 	public void testFindAllPropertys() {
-		entity = this.createEntity("Entity_1", "EntityNamespace");
+		entity = createEntity("Entity_1", "EntityNamespace");
 		entity.persist();
-		property = this.createProperty("Property_1", "configuration",
-				PropertyType.TEXT, entity);
+		property = createProperty("Property_1", null, PropertyType.TEXT, entity);
 		property.persist();
 
-		Property property_2 = this.createProperty("Property_2",
-				"configuration", PropertyType.TEXT, entity);
+		Property property_2 = createProperty("Property_2", null,
+				PropertyType.TEXT, entity);
 		property_2.persist();
 		long count = Property.countPropertys();
 		List<Property> result = Property.findAllPropertys();
@@ -305,14 +315,13 @@ public class PropertyIntegrationTest {
 
 	@Test
 	public void listAllPropertiesOfAnEntity() {
-		entity = this.createEntity("Entity_1", "EntityNamespace");
+		entity = createEntity("Entity_1", "EntityNamespace");
 		entity.persist();
-		property = this.createProperty("Property_1", "configuration",
-				PropertyType.TEXT, entity);
+		property = createProperty("Property_1", null, PropertyType.TEXT, entity);
 		property.persist();
 
-		Property property_2 = this.createProperty("Property_2",
-				"configuration", PropertyType.TEXT, entity);
+		Property property_2 = createProperty("Property_2", null,
+				PropertyType.TEXT, entity);
 		property_2.persist();
 
 		List<Property> properties = Property.findPropertysByEntity(entity)
@@ -325,14 +334,13 @@ public class PropertyIntegrationTest {
 
 	@Test
 	public void listAllPropertiesOfAnEntityByValidFragmentOfName() {
-		entity = this.createEntity("Entity_1", "EntityNamespace");
+		entity = createEntity("Entity_1", "EntityNamespace");
 		entity.persist();
-		property = this.createProperty("Property_1", "configuration",
-				PropertyType.TEXT, entity);
+		property = createProperty("Property_1", null, PropertyType.TEXT, entity);
 		property.persist();
 
-		Property property_2 = this.createProperty("Property_2",
-				"configuration", PropertyType.TEXT, entity);
+		Property property_2 = createProperty("Property_2", null,
+				PropertyType.TEXT, entity);
 		property_2.persist();
 
 		List<Property> propertiesByFragment = entity.findPropertiesByName("_2");
@@ -345,14 +353,13 @@ public class PropertyIntegrationTest {
 	@Test
 	public void listAllPropertiesOfAnEntityByEmptyName() {
 		// TODO
-		entity = this.createEntity("Entity_1", "EntityNamespace");
+		entity = createEntity("Entity_1", "EntityNamespace");
 		entity.persist();
-		property = this.createProperty("Property 1", "configuration",
-				PropertyType.TEXT, entity);
+		property = createProperty("Property 1", null, PropertyType.TEXT, entity);
 		property.persist();
 
-		Property property_2 = this.createProperty("Property_2",
-				"configuration", PropertyType.TEXT, entity);
+		Property property_2 = createProperty("Property_2", null,
+				PropertyType.TEXT, entity);
 		property_2.persist();
 
 		List<Property> propertiesByFragment = entity.findPropertiesByName("");
@@ -365,14 +372,13 @@ public class PropertyIntegrationTest {
 
 	@Test
 	public void listAllPropertiesOfAnEntityByFragmentOfNameWithSpaces() {
-		entity = this.createEntity("Entity_1", "EntityNamespace");
+		entity = createEntity("Entity_1", "EntityNamespace");
 		entity.persist();
-		property = this.createProperty("Property 1", "configuration",
-				PropertyType.TEXT, entity);
+		property = createProperty("Property 1", null, PropertyType.TEXT, entity);
 		property.persist();
 
-		Property property_2 = this.createProperty("Property_2",
-				"configuration", PropertyType.TEXT, entity);
+		Property property_2 = createProperty("Property_2", null,
+				PropertyType.TEXT, entity);
 		property_2.persist();
 
 		List<Property> propertiesByFragment = entity
@@ -396,10 +402,9 @@ public class PropertyIntegrationTest {
 
 	@Test
 	public void getPropertyByID() {
-		entity = this.createEntity("Entity_1", "EntityNamespace");
+		entity = createEntity("Entity_1", "EntityNamespace");
 		entity.persist();
-		property = this.createProperty("Property 1", "configuration",
-				PropertyType.TEXT, entity);
+		property = createProperty("Property 1", null, PropertyType.TEXT, entity);
 		property.persist();
 		Assert.assertEquals(property, Property.findProperty(property.getId()));
 	}

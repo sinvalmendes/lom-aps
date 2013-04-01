@@ -3,14 +3,9 @@
 
 package com.nanuvem.lom.model;
 
-import com.nanuvem.lom.model.Property;
-import com.nanuvem.lom.model.PropertyDataOnDemand;
 import com.nanuvem.lom.model.PropertyIntegrationTest;
-import java.util.List;
 import org.junit.Assert;
-import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +18,4 @@ privileged aspect PropertyIntegrationTest_Roo_IntegrationTest {
     
     declare @type: PropertyIntegrationTest: @Transactional;
     
-    @Autowired
-    private PropertyDataOnDemand PropertyIntegrationTest.dod;
-                  
 }
